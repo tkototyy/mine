@@ -24,17 +24,14 @@ jobs:
       - name: Enable Opera VPN and Take Screenshot
         env:
           DISPLAY: ":99"
-          WEBPAGE_URL: "https://example.com" # <-- change to your target webpage
+          WEBPAGE_URL: "https://example.com"
         run: |
-          # Launch Opera to VPN settings
-          opera --start-maximized opera://settings/vpn &
+          Xvfb :99 -screen 0 1920x1080x24 &
+          sleep 2
+          opera --no-sandbox --disable-gpu --disable-software-rasterizer --disable-dev-shm-usage --disable-features=VizDisplayCompositor --enable-features=UseOzonePlatform --ozone-platform=headless --start-maximized opera://settings/vpn &
           OPERA_PID=$!
-          sleep 8  # Wait for the browser to load
-
-          # Take a screenshot
+          sleep 12  # Wait for browser to load
           import -window root screenshot.png
-
-          # Kill Opera
           kill $OPERA_PID || true
 
       - name: Upload Screenshot

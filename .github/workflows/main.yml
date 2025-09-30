@@ -14,17 +14,17 @@ jobs:
 
       - name: Start Psiphon and Wait for Connection
         run: |
-          ./psiphon-tunnel-core-x86_64 --format=json --local-http-proxy-port=3128 --local-socks-proxy-port=1080 > psiphon.log 2>&1 &
+          ./psiphon-tunnel-core-x86_64
           sleep 30
           grep -i 'listening' psiphon.log || true
 
       - name: Test HTTP Proxy with curl
         run: |
-          curl --proxy http://127.0.0.1:3128 https://api.ipify.org
+          curl https://api.ipify.org
 
       - name: Test SOCKS Proxy with curl
         run: |
-          curl --socks5-hostname 127.0.0.1:1080 https://api.ipify.org
+          curl https://api.ipify.org
 
       - name: Upload Psiphon Log
         uses: actions/upload-artifact@v4

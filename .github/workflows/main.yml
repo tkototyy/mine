@@ -18,7 +18,7 @@ jobs:
 
       - name: Wait for Psiphon to establish connection
         run: |
-          Start-Sleep -Seconds 40
+          Start-Sleep -Seconds 20
 
       - name: Set up Python and SeleniumBase
         uses: actions/setup-python@v5
@@ -35,7 +35,7 @@ jobs:
           import time
           from seleniumbase import Driver
           driver = Driver(browser='chrome', headless=True)
-          driver.get('https://ipleak.net/')
+          driver.get('https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test')
           time.sleep(15)
           driver.save_screenshot('ipleak_screenshot.png')
           driver.quit()

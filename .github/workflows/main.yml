@@ -1,4 +1,4 @@
-name: "Use Psiphon in GitHub Actions"
+name: Use Psiphon in GitHub Actions
 
 on:
   workflow_dispatch:
@@ -9,13 +9,13 @@ jobs:
     steps:
       - name: Download Psiphon Tunnel Core Binary
         run: |
-          wget -O psiphon-tunnel-core-x86_64 "https://github.com/Psiphon-Labs/psiphon-tunnel-core-binaries/raw/main/linux/psiphon-tunnel-core-x86_64"
+          wget -O psiphon-tunnel-core-x86_64 "https://github.com/Psiphon-Labs/psiphon-tunnel-core-binaries/raw/master/linux/psiphon-tunnel-core-x86_64"
           chmod +x psiphon-tunnel-core-x86_64
 
       - name: Start Psiphon and Wait for Connection
         run: |
           ./psiphon-tunnel-core-x86_64 --format=json --local-http-proxy-port=3128 --local-socks-proxy-port=1080 > psiphon.log 2>&1 &
-          sleep 30 # Wait for the connection to establish
+          sleep 30
           grep -i 'listening' psiphon.log || true
 
       - name: Test HTTP Proxy with curl

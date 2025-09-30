@@ -1,35 +1,35 @@
-name: Opera VPN Screenshot with SeleniumBase
+name: Use Psiphon in GitHub Actions
 
 on:
   workflow_dispatch:
 
 jobs:
-  opera-screenshot:
+  use-psiphon:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Install dependencies
+      - name: Download Psiphon binary
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget
-          wget -qO- https://deb.opera.com/archive.key | sudo apt-key add -
-          echo "deb [arch=amd64] https://deb.opera.com/opera-stable/ stable non-free" | sudo tee /etc/apt/sources.list.d/opera-stable.list
-          sudo apt-get update
-          sudo apt-get install -y opera-stable xvfb
-          pip install seleniumbase
+          wget -O psiphon-tunnel-core.tar.gz "https://github.com/Psiphon-Labs/psiphon-tunnel-core-binaries/releases/latest/download/psiphon-tunnel-core-linux.tar.gz"
+          tar xzf psiphon-tunnel-core.tar.gz
+          chmod +x psiphon-tunnel-core
 
-      - name: Run SeleniumBase Opera VPN Screenshot
-        env:
-          DISPLAY: ":99"
+      - name: Start Psiphon (background)
         run: |
-          Xvfb :99 -screen 0 1920x1080x24 &
-          sleep 2
-          pytest opera_vpn_screenshot.py --browser=opera --headless
+          ./psiphon-tunnel-core --format=json --local-http-proxy-port=3128 --local-socks-proxy-port=1080 > psiphon.log 2>&1 &
+          sleep 20
+          grep -i 'listening' psiphon.log || true
+        # Wait time may need to be increased for first connection.
 
-      - name: Upload Screenshot
+      - name: Test with curl through Psiphon HTTP proxy
+        run: |
+          curl --proxy http://127.0.0.1:3128 https://api.ipify.org
+
+      - name: Test with curl through Psiphon SOCKS proxy
+        run: |
+          curl --socks5-hostname 127.0.0.1:1080 https://api.ipify.org
+
+      - name: Upload Psiphon log (optional)
         uses: actions/upload-artifact@v4
         with:
-          name: opera-vpn-screenshot
-          path: opera_vpn_screenshot.png
+          name: psiphon-log
+          path: psiphon.log

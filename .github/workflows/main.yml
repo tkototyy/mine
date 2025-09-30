@@ -27,6 +27,12 @@ jobs:
           ./psiphon-tunnel-core-x86_64 -config psiphon.config > psiphon.log 2>&1 &
           sleep 30
           grep -i 'listening' psiphon.log || true
+          
+      - name: Upload Psiphon Log
+        uses: actions/upload-artifact@v4
+        with:
+          name: psiphon-log
+          path: psiphon.log
 
       - name: Test HTTP Proxy with curl
         run: |
@@ -36,8 +42,3 @@ jobs:
         run: |
           curl --socks5-hostname 127.0.0.1:1080 https://api.ipify.org
 
-      - name: Upload Psiphon Log
-        uses: actions/upload-artifact@v4
-        with:
-          name: psiphon-log
-          path: psiphon.log

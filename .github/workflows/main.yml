@@ -1,34 +1,32 @@
-name: Use Psiphon in GitHub Actions
+name: "Use Psiphon in GitHub Actions"
 
 on:
   workflow_dispatch:
 
 jobs:
-  use-psiphon:
+  psiphon-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Download Psiphon binary
+      - name: Download Psiphon Tunnel Core Binary
         run: |
-          wget -O psiphon-tunnel-core.tar.gz "https://github.com/Psiphon-Labs/psiphon-tunnel-core-binaries/releases/latest/download/psiphon-tunnel-core-linux.tar.gz"
-          tar xzf psiphon-tunnel-core.tar.gz
-          chmod +x psiphon-tunnel-core
+          wget -O psiphon-tunnel-core-x86_64 "https://github.com/Psiphon-Labs/psiphon-tunnel-core-binaries/raw/main/linux/psiphon-tunnel-core-x86_64"
+          chmod +x psiphon-tunnel-core-x86_64
 
-      - name: Start Psiphon (background)
+      - name: Start Psiphon and Wait for Connection
         run: |
-          ./psiphon-tunnel-core --format=json --local-http-proxy-port=3128 --local-socks-proxy-port=1080 > psiphon.log 2>&1 &
-          sleep 20
+          ./psiphon-tunnel-core-x86_64 --format=json --local-http-proxy-port=3128 --local-socks-proxy-port=1080 > psiphon.log 2>&1 &
+          sleep 30 # Wait for the connection to establish
           grep -i 'listening' psiphon.log || true
-        # Wait time may need to be increased for first connection.
 
-      - name: Test with curl through Psiphon HTTP proxy
+      - name: Test HTTP Proxy with curl
         run: |
           curl --proxy http://127.0.0.1:3128 https://api.ipify.org
 
-      - name: Test with curl through Psiphon SOCKS proxy
+      - name: Test SOCKS Proxy with curl
         run: |
           curl --socks5-hostname 127.0.0.1:1080 https://api.ipify.org
 
-      - name: Upload Psiphon log (optional)
+      - name: Upload Psiphon Log
         uses: actions/upload-artifact@v4
         with:
           name: psiphon-log

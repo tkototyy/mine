@@ -1,4 +1,4 @@
-name: Opera VPN Screenshot (with GUI Automation)
+name: Opera VPN Screenshot with SeleniumBase
 
 on:
   workflow_dispatch:
@@ -7,31 +7,29 @@ jobs:
   opera-screenshot:
     runs-on: ubuntu-latest
     steps:
-      - name: Install dependencies and Opera
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget xvfb imagemagick xdotool
+          sudo apt-get install -y wget
           wget -qO- https://deb.opera.com/archive.key | sudo apt-key add -
           echo "deb [arch=amd64] https://deb.opera.com/opera-stable/ stable non-free" | sudo tee /etc/apt/sources.list.d/opera-stable.list
           sudo apt-get update
-          sudo apt-get install -y opera-stable
+          sudo apt-get install -y opera-stable xvfb
+          pip install seleniumbase
 
-
-      - name: Enable Opera VPN and Take Screenshot
+      - name: Run SeleniumBase Opera VPN Screenshot
         env:
           DISPLAY: ":99"
-          WEBPAGE_URL: "https://example.com"
         run: |
           Xvfb :99 -screen 0 1920x1080x24 &
           sleep 2
-          opera --no-sandbox --disable-gpu --disable-software-rasterizer --disable-dev-shm-usage --disable-features=VizDisplayCompositor --enable-features=UseOzonePlatform --start-maximized opera://settings/vpn &
-          OPERA_PID=$!
-          sleep 12  # Wait for browser to load
-          import -window root screenshot.png
-          kill $OPERA_PID || true
+          pytest opera_vpn_screenshot.py --browser=opera --headless
 
       - name: Upload Screenshot
         uses: actions/upload-artifact@v4
         with:
-          name: opera-screenshot
-          path: screenshot.png
+          name: opera-vpn-screenshot
+          path: opera_vpn_screenshot.png

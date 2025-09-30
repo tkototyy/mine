@@ -1,10 +1,10 @@
-name: Run Psiphon3 on Windows and Check IP
+name: Psiphon3 + SeleniumBase Screenshot on Windows
 
 on:
   workflow_dispatch:
 
 jobs:
-  psiphon-windows:
+  psiphon-windows-seleniumbase:
     runs-on: windows-latest
     steps:
       - name: Download Psiphon3.exe
@@ -18,20 +18,32 @@ jobs:
 
       - name: Wait for Psiphon to establish connection
         run: |
-          Start-Sleep -Seconds 15
+          Start-Sleep -Seconds 40
 
-      - name: Install curl with Chocolatey
+      - name: Set up Python and SeleniumBase
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install SeleniumBase and Chrome WebDriver
         run: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force
-          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
-          if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
-            Write-Host "Installing Chocolatey..."
-            Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-          }
-          choco install curl -y
+          pip install seleniumbase
+          seleniumbase install chromedriver
+
+      - name: Take screenshot of https://ipleak.net/
+        run: |
+          python -c "
+          import time
+          from seleniumbase import Driver
+          driver = Driver(browser='chrome', headless=True)
+          driver.get('https://ipleak.net/')
+          time.sleep(15)
+          driver.save_screenshot('ipleak_screenshot.png')
+          driver.quit()
+          "
         shell: pwsh
 
-      - name: Check external IP using curl
-        run: |
-          curl https://ipinfo.io
-        shell: pwsh
+      - name: Upload ipleak.net screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: ipleak-screenshot
+          path: ipleak_screenshot.png

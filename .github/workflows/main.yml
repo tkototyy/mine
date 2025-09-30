@@ -19,7 +19,7 @@ jobs:
         run: |
           sudo chmod a+x /usr/local/bin/xvpn
 
-      - name: Connect with XVPN (defaults: Auto, Fastest Server)
+      - name: Connect with XVPN 
         run: |
           sudo xvpn connect > xvpn.log 2>&1 &
           sleep 30

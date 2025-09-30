@@ -1,0 +1,40 @@
+name: Opera VPN Screenshot (with GUI Automation)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  opera-screenshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget xvfb imagemagick opera-stable xdotool
+
+      - name: Setup Xvfb
+        run: |
+          Xvfb :99 -screen 0 1920x1080x24 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+
+      - name: Enable Opera VPN and Take Screenshot
+        env:
+          DISPLAY: ":99"
+          WEBPAGE_URL: "https://example.com" # <-- change to your target webpage
+        run: |
+          # Launch Opera to VPN settings
+          opera --start-maximized opera://settings/vpn &
+          OPERA_PID=$!
+          sleep 8  # Wait for the browser to load
+
+          # Take a screenshot
+          import -window root screenshot.png
+
+          # Kill Opera
+          kill $OPERA_PID || true
+
+      - name: Upload Screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: opera-screenshot
+          path: screenshot.png

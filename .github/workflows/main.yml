@@ -1,44 +1,35 @@
-name: Use Psiphon in GitHub Actions
+name: Use XVPN in GitHub Actions
 
 on:
   workflow_dispatch:
 
 jobs:
-  psiphon-job:
+  xvpn-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Download Psiphon Tunnel Core Binary
+      - name: Download XVPN binary
         run: |
-          wget -O psiphon-tunnel-core-x86_64 "https://github.com/Psiphon-Labs/psiphon-tunnel-core-binaries/raw/master/linux/psiphon-tunnel-core-x86_64"
-          chmod +x psiphon-tunnel-core-x86_64
+          wget -O xvpn_linux_amd64 "https://z3d9.com/4dzfjmwrjw/XVPN_1.4.1_5006_8c0edcef_2025-09-26-17-00-38/xvpn_linux_amd64"
 
-      - name: Create Psiphon config
+      - name: Move XVPN to /usr/local/bin
         run: |
-          cat > psiphon.config <<EOF
-          {
-            "IsRunProxy": true,
-            "LocalHttpProxyPort": 3128,
-            "LocalSocksProxyPort": 1080
-          }
-          EOF
+          sudo mv xvpn_linux_amd64 /usr/local/bin/xvpn
 
-      - name: Start Psiphon and Wait for Connection
+      - name: Add execute permissions to XVPN
         run: |
-          ./psiphon-tunnel-core-x86_64 -config psiphon.config > psiphon.log 2>&1 &
+          sudo chmod a+x /usr/local/bin/xvpn
+
+      - name: Connect with XVPN (defaults: Auto, Fastest Server)
+        run: |
+          sudo xvpn connect > xvpn.log 2>&1 &
           sleep 30
-          grep -i 'listening' psiphon.log || true
-          
-      - name: Upload Psiphon Log
+
+      - name: Check external IP (should be VPN)
+        run: |
+          curl -s https://ipinfo.io
+
+      - name: Upload XVPN log
         uses: actions/upload-artifact@v4
         with:
-          name: psiphon-log
-          path: psiphon.log
-
-      - name: Test HTTP Proxy with curl
-        run: |
-          curl --proxy http://127.0.0.1:3128 https://api.ipify.org
-
-      - name: Test SOCKS Proxy with curl
-        run: |
-          curl --socks5-hostname 127.0.0.1:1080 https://api.ipify.org
-
+          name: xvpn-log
+          path: xvpn.log

@@ -18,9 +18,20 @@ jobs:
 
       - name: Wait for Psiphon to establish connection
         run: |
-          Start-Sleep -Seconds 40
+          Start-Sleep -Seconds 15
 
-      - name: Check external IP
+      - name: Install curl with Chocolatey
         run: |
-          Invoke-WebRequest -Uri "https://ipinfo.io" -UseBasicParsing | Select-Object -ExpandProperty Content
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
+          if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+            Write-Host "Installing Chocolatey..."
+            Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+          }
+          choco install curl -y
+        shell: pwsh
+
+      - name: Check external IP using curl
+        run: |
+          curl https://ipinfo.io
         shell: pwsh

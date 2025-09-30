@@ -1,35 +1,26 @@
-name: Use XVPN in GitHub Actions
+name: Run Psiphon3 on Windows and Check IP
 
 on:
   workflow_dispatch:
 
 jobs:
-  xvpn-job:
-    runs-on: ubuntu-latest
+  psiphon-windows:
+    runs-on: windows-latest
     steps:
-      - name: Download XVPN binary
+      - name: Download Psiphon3.exe
         run: |
-          wget -O xvpn_linux_amd64 "https://z3d9.com/4dzfjmwrjw/XVPN_1.4.1_5006_8c0edcef_2025-09-26-17-00-38/xvpn_linux_amd64"
+          Invoke-WebRequest -Uri "https://psiphon.ca/psiphon3.exe" -OutFile "$env:USERPROFILE\Desktop\psiphon3.exe"
 
-      - name: Move XVPN to /usr/local/bin
+      - name: Start Psiphon3.exe (background)
         run: |
-          sudo mv xvpn_linux_amd64 /usr/local/bin/xvpn
+          Start-Process -FilePath "$env:USERPROFILE\Desktop\psiphon3.exe"
+        shell: pwsh
 
-      - name: Add execute permissions to XVPN
+      - name: Wait for Psiphon to establish connection
         run: |
-          sudo chmod a+x /usr/local/bin/xvpn
+          Start-Sleep -Seconds 40
 
-      - name: Connect with XVPN 
+      - name: Check external IP
         run: |
-          sudo xvpn connect > xvpn.log 2>&1 &
-          sleep 30
-
-      - name: Check external IP (should be VPN)
-        run: |
-          curl -s https://ipinfo.io
-
-      - name: Upload XVPN log
-        uses: actions/upload-artifact@v4
-        with:
-          name: xvpn-log
-          path: xvpn.log
+          Invoke-WebRequest -Uri "https://ipinfo.io" -UseBasicParsing | Select-Object -ExpandProperty Content
+        shell: pwsh

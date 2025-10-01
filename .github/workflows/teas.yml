@@ -2,6 +2,8 @@ name: Psiphon3 + SeleniumBase Screenshot on Windows
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
 
 jobs:
   psiphon-windows-seleniumbase:

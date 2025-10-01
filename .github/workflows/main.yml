@@ -7,6 +7,8 @@ jobs:
   psiphon-windows-seleniumbase:
     runs-on: windows-latest
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
       - name: Download Psiphon3.exe
         run: |
           Invoke-WebRequest -Uri "https://psiphon.ca/psiphon3.exe" -OutFile "$env:USERPROFILE\Desktop\psiphon3.exe"

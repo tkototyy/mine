@@ -1,0 +1,48 @@
+name: Psiphon3 + SeleniumBase Screenshot on Windows
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
+
+jobs:
+  psiphon-windows-seleniumbase:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Download Psiphon3.exe
+        run: |
+          Invoke-WebRequest -Uri "https://psiphon.ca/psiphon3.exe" -OutFile "$env:USERPROFILE\Desktop\psiphon3.exe"
+
+      - name: Start Psiphon3.exe (background)
+        run: |
+          Start-Process -FilePath "$env:USERPROFILE\Desktop\psiphon3.exe"
+        shell: pwsh
+
+      - name: Wait for Psiphon to establish connection
+        run: |
+          Start-Sleep -Seconds 20
+
+      - name: Set up Python and SeleniumBase
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install SeleniumBase and Chrome WebDriver
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade pip
+          pip install --upgrade wheel
+          pip install --upgrade seleniumbase
+          pip install --upgrade pyautogui
+          pip install --upgrade pymongo
+          pip install --upgrade python-xlib
+          seleniumbase install chromedriver
+      - name: Run python vv.py --debug
+        run: |
+          python vv.py --debug --chrome --xvfb --screenshot
+      - name: Upload ipleak.net screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: aaa2
+          path: aaa2.png

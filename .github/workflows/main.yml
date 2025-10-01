@@ -26,22 +26,17 @@ jobs:
           python-version: "3.11"
       - name: Install SeleniumBase and Chrome WebDriver
         run: |
-          pip install seleniumbase
+          python -m pip install --upgrade pip
+          pip install --upgrade pip
+          pip install --upgrade wheel
+          pip install --upgrade seleniumbase
+          pip install --upgrade pyautogui
+          pip install --upgrade pymongo
+          pip install --upgrade python-xlib
           seleniumbase install chromedriver
-
-      - name: Take screenshot of https://ipleak.net/
+      - name: Run python vv.py --debug
         run: |
-          python -c "
-          import time
-          from seleniumbase import Driver
-          driver = Driver(browser='chrome', headless=True)
-          driver.get('https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test')
-          time.sleep(15)
-          driver.save_screenshot('ipleak_screenshot.png')
-          driver.quit()
-          "
-        shell: pwsh
-
+          python vv.py --debug --chrome --xvfb --screenshot
       - name: Upload ipleak.net screenshot
         uses: actions/upload-artifact@v4
         with:

@@ -6,6 +6,13 @@ import requests
 import os
 import random
 import subprocess
+geo_data = requests.get("http://ip-api.com/json/").json()
+
+latitude = geo_data["lat"]
+longitude = geo_data["lon"]
+timezone_id = geo_data["timezone"]
+language_code = geo_data["countryCode"].lower()
+
 with SB(uc=True, test=True,locale=f"{language_code.upper()}") as yyw45:
     yyw45.execute_cdp_cmd(
         "Emulation.setGeolocationOverride",

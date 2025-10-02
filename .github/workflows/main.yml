@@ -30,7 +30,7 @@ jobs:
         
     - name: Run Opera VPN Python script
       run: |
-        sudo python3 opera_vpn_screenshot.py
+        python3 opera_vpn_screenshot.py
 
     - name: Connect to random OpenVPN config
       shell: bash

@@ -66,8 +66,6 @@ for link in download_links:
         if r.status_code == 200:
             content = r.text
             content = content.replace("cipher AES-128-CBC", "data-ciphers AES-128-CBC")
-            if "block-outside-dns" not in content:
-                content += "\nblock-outside-dns\n"
 
             with open(local_path, "w", encoding="utf-8") as f:
                 f.write(content)

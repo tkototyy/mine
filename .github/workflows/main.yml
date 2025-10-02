@@ -26,7 +26,7 @@ jobs:
         sudo pip install --upgrade pyautogui --ignore-installed
         sudo pip install --upgrade pymongo --ignore-installed
         sudo pip install --upgrade python-xlib --ignore-installed
-        seleniumbase install chromedriver
+        sudo seleniumbase install chromedriver
         
     - name: Run Opera VPN Python script
       run: |

@@ -27,7 +27,7 @@ jobs:
         pip install --upgrade pyautogui
         pip install --upgrade pymongo
         pip install --upgrade python-xlib
-        pip install requests selenium
+        pip install --upgrade selenium
         sudo apt install google-chrome-stable
         seleniumbase install chromedriver
         

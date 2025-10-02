@@ -35,17 +35,23 @@ jobs:
     - name: Connect to random OpenVPN config
       shell: bash
       run: |
-        # Find all .ovpn files in /etc/openvpn
-        configs=(/etc/openvpn/*.ovpn)
+        # Look for configs in repo folder ./vpn-configs
+        configs=(vpn-configs/*.ovpn)
         if [ ${#configs[@]} -eq 0 ]; then
-          echo "No .ovpn configs found in /etc/openvpn"
+          echo "No .ovpn configs found in ./vpn-configs"
           exit 1
         fi
+    
         # Pick a random config
         config="${configs[RANDOM % ${#configs[@]}]}"
         echo "Connecting using $config"
+    
+        # OpenVPN still needs root to create tun device, so keep sudo here
         sudo openvpn --config "$config" --daemon
+    
         # Wait a bit to establish connection
         sleep 20
+    
         # Optionally, check VPN connection (print public IP)
         curl ifconfig.me || true
+

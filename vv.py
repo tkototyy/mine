@@ -48,7 +48,7 @@ with SB(uc=True, test=True,locale=f"{language_code.upper()}") as yyw45:
     yyw45.sleep(4)
     if yyw45.is_element_present('button:contains("Accept")'):
         yyw45.uc_click('button:contains("Accept")', reconnect_time=4)
-    if yyw45.is_element_visible('#injected-channel-player'):
+    if True:
         gsyhey = yyw45.get_new_driver(undetectable=True)
         gsyhey.uc_open_with_reconnect(url, 5)
         gsyhey.uc_gui_click_captcha()

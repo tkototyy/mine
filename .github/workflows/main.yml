@@ -20,12 +20,12 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y openvpn google-chrome-stable
         python -m pip install --upgrade pip wheel
-        pip install seleniumbase pyautogui pymongo python-xlib
+        sudo pip3 install seleniumbase pyautogui pymongo python-xlib
         seleniumbase install chromedriver
         
     - name: Run Opera VPN Python script
       run: |
-        python3 opera_vpn_screenshot.py
+        sudo python3 opera_vpn_screenshot.py
 
     - name: Connect to random OpenVPN config
       shell: bash

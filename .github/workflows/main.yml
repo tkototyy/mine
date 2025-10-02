@@ -19,7 +19,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y openvpn google-chrome-stable
-        python -m pip install --upgrade pip wheel --break-system-packages
+        python -m pip install --upgrade pip 
         sudo pip3 install seleniumbase pyautogui pymongo python-xlib
         seleniumbase install chromedriver
         

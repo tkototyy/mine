@@ -23,11 +23,10 @@ jobs:
         pip install --upgrade pip
         pip install --upgrade wheel
         pip install --upgrade seleniumbase
-        pip install --upgrade selenium
+        pip install selenium
         pip install --upgrade pyautogui
         pip install --upgrade pymongo
         pip install --upgrade python-xlib
-        pip install --upgrade selenium
         sudo apt install google-chrome-stable
         seleniumbase install chromedriver
         

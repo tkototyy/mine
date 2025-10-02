@@ -21,6 +21,7 @@ jobs:
         sudo apt-get install -y openvpn google-chrome-stable
         python -m pip install --upgrade pip --ignore-installed
         pip install --upgrade pip --ignore-installed
+        pip install requests
         pip install --upgrade wheel --ignore-installed
         pip install --upgrade seleniumbase --ignore-installed
         pip install --upgrade pyautogui --ignore-installed

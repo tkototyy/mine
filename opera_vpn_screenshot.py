@@ -17,7 +17,7 @@ driver = webdriver.Chrome(options=options)
 max_retries = 3
 attempt = 0
 download_links = []
-
+anchors = []
 while attempt < max_retries and not anchors:
     try:
         driver.get("https://openproxylist.com/openvpn/")

@@ -39,7 +39,7 @@ with SB(uc=True, test=True,locale=f"{language_code.upper()}") as yyw45:
         "Emulation.setTimezoneOverride",
         {"timezoneId": timezone_id}
     )
-    url = "https://www.twitch.tv/jokergotyou_69"
+    url = "https://www.twitch.tv/corner2020"
     yyw45.uc_open_with_reconnect(url, 4)
     yyw45.sleep(4)
     yyw45.uc_gui_click_captcha()
@@ -56,7 +56,7 @@ with SB(uc=True, test=True,locale=f"{language_code.upper()}") as yyw45:
         yyw45.sleep(10)
         if gsyhey.is_element_present('button:contains("Accept")'):
             gsyhey.uc_click('button:contains("Accept")', reconnect_time=4)
-        while is_stream_online("jokergotyou_69"):
+        while is_stream_online("corner2020"):
             yyw45.sleep(10)
         yyw45.quit_extra_driver()
     yyw45.sleep(10)

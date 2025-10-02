@@ -22,7 +22,7 @@ wait = WebDriverWait(driver, 10)
 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 # --- Handle consent popup if present ---
 try:
-    consent_btn = wait.until(
+    consent_btn = WebDriverWait(driver, 5).until(
         EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Accept') or contains(., 'Consent')]"))
     )
     consent_btn.click()

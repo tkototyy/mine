@@ -18,21 +18,14 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y openvpn
-        python -m pip install --upgrade pip
-        pip install --upgrade pip
-        pip install --upgrade wheel
-        pip install --upgrade seleniumbase
-        pip install selenium
-        pip install --upgrade pyautogui
-        pip install --upgrade pymongo
-        pip install --upgrade python-xlib
-        sudo apt install google-chrome-stable
+        sudo apt-get install -y openvpn google-chrome-stable
+        python -m pip install --upgrade pip wheel
+        pip install seleniumbase pyautogui pymongo python-xlib
         seleniumbase install chromedriver
         
     - name: Run Opera VPN Python script
       run: |
-        sudo python3 opera_vpn_screenshot.py
+        python3 opera_vpn_screenshot.py
 
     - name: Connect to random OpenVPN config
       shell: bash

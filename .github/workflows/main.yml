@@ -19,14 +19,14 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y openvpn google-chrome-stable
-        sudo python -m pip install --upgrade pip --ignore-installed
-        sudo pip install --upgrade pip --ignore-installed
-        sudo pip install --upgrade wheel --ignore-installed
-        sudo pip install --upgrade seleniumbase --ignore-installed
-        sudo pip install --upgrade pyautogui --ignore-installed
-        sudo pip install --upgrade pymongo --ignore-installed
-        sudo pip install --upgrade python-xlib --ignore-installed
-        sudo seleniumbase install chromedriver
+        python -m pip install --upgrade pip --ignore-installed
+        pip install --upgrade pip --ignore-installed
+        pip install --upgrade wheel --ignore-installed
+        pip install --upgrade seleniumbase --ignore-installed
+        pip install --upgrade pyautogui --ignore-installed
+        pip install --upgrade pymongo --ignore-installed
+        pip install --upgrade python-xlib --ignore-installed
+        seleniumbase install chromedriver
         
     - name: Run Opera VPN Python script
       run: |

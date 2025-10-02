@@ -14,21 +14,37 @@ options.add_argument("--headless")  # run without opening browser window
 driver = webdriver.Chrome(options=options)
 
 # --- Target site (replace with the actual site you want to scrape) ---
-url = "https://openproxylist.com/openvpn/"  
-driver.get(url)
-time.sleep(5)
+max_retries = 3
+attempt = 0
 download_links = []
-wait = WebDriverWait(driver, 10)
-driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-# --- Handle consent popup if present ---
-try:
-    consent_btn = WebDriverWait(driver, 5).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Accept') or contains(., 'Consent')]"))
-    )
-    consent_btn.click()
-    print("Consent accepted.")
-except TimeoutException:
-    print("No consent button found, continuing...")
+
+while attempt < max_retries and not anchors:
+    try:
+        driver.get("https://openproxylist.com/openvpn/")
+        time.sleep(5)
+
+        # Handle consent popup if present
+        try:
+            consent_btn = WebDriverWait(driver, 15).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Accept') or contains(., 'Consent')]"))
+            )
+            consent_btn.click()
+            print("Consent accepted.")
+        except TimeoutException:
+            print("No consent button found, continuing...")
+
+        # Scroll down to load links
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(5)
+
+        # Try to collect anchors
+        anchors = driver.find_elements(By.XPATH, "//a[contains(@href, '.ovpn')]")
+    
+    except (NoSuchElementException, TimeoutException) as e:
+        print(f"Attempt {attempt+1} failed: {e}")
+        # reload and try again
+    finally:
+        attempt += 1
 time.sleep(5)
 
 while True:

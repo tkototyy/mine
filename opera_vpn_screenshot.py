@@ -10,6 +10,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 # --- Setup Selenium ---
 options = webdriver.ChromeOptions()
 options.add_argument("--headless")  # run without opening browser window
+# For Ubuntu: Ensure chromedriver is in your PATH, and Chrome/Chromium is installed
 driver = webdriver.Chrome(options=options)
 
 # --- Target site (replace with the actual site you want to scrape) ---
@@ -51,8 +52,8 @@ driver.quit()
 print(f"Collected {len(download_links)} links.")
 
 # --- Download and modify files ---
-# Directly save into OpenVPN config directory
-openvpn_config_dir = r"C:\Program Files\OpenVPN\config"
+# For Ubuntu, OpenVPN config dir is typically /etc/openvpn
+openvpn_config_dir = "/etc/openvpn"
 
 # Make sure the directory exists
 os.makedirs(openvpn_config_dir, exist_ok=True)
@@ -75,6 +76,6 @@ for link in download_links:
         else:
             print(f"Failed to download {link} (status {r.status_code})")
     except PermissionError:
-        print(f"Permission denied: run this script as Administrator to write into {openvpn_config_dir}")
+        print(f"Permission denied: run this script as root (e.g., with sudo) to write into {openvpn_config_dir}")
     except Exception as e:
         print(f"Error downloading {link}: {e}")

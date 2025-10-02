@@ -80,7 +80,7 @@ jobs:
 
     - name: Run Opera VPN Python script
       run: |
-        python3 ena.py
+        python3 vv.py
     - name: Upload screenshot artifact
       uses: actions/upload-artifact@v4
       with:

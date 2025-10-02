@@ -19,6 +19,8 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y openvpn chromium-browser chromium-chromedriver python3-selenium
+        # Ensure chromedriver is in PATH
+        export PATH=$PATH:/usr/lib/chromium-browser/
         pip install requests selenium
 
     - name: Run Opera VPN Python script

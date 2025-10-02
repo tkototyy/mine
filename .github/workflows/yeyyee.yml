@@ -1,48 +1,58 @@
-name: Psiphon3 + SeleniumBase Screenshot on Windows
+name: OpenVPN Connect and Script
 
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: "*/5 * * * *"
+on: [workflow_dispatch]
 
 jobs:
-  psiphon-windows-seleniumbase:
-    runs-on: windows-latest
+  run-openvpn:
+    runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-      - name: Download Psiphon3.exe
-        run: |
-          Invoke-WebRequest -Uri "https://psiphon.ca/psiphon3.exe" -OutFile "$env:USERPROFILE\Desktop\psiphon3.exe"
+    - name: Checkout repo
+      uses: actions/checkout@v4
 
-      - name: Start Psiphon3.exe (background)
-        run: |
-          Start-Process -FilePath "$env:USERPROFILE\Desktop\psiphon3.exe"
-        shell: pwsh
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
 
-      - name: Wait for Psiphon to establish connection
-        run: |
-          Start-Sleep -Seconds 20
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y openvpn google-chrome-stable
+        python -m pip install --upgrade pip --ignore-installed
+        pip install --upgrade pip --ignore-installed
+        pip install requests
+        pip install --upgrade wheel --ignore-installed
+        pip install --upgrade seleniumbase --ignore-installed
+        pip install --upgrade pyautogui --ignore-installed
+        pip install --upgrade pymongo --ignore-installed
+        pip install --upgrade python-xlib --ignore-installed
+        seleniumbase install chromedriver
+        
+    - name: Run Opera VPN Python script
+      run: |
+        python3 opera_vpn_screenshot.py
 
-      - name: Set up Python and SeleniumBase
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Install SeleniumBase and Chrome WebDriver
-        run: |
-          python -m pip install --upgrade pip
-          pip install --upgrade pip
-          pip install --upgrade wheel
-          pip install --upgrade seleniumbase
-          pip install --upgrade pyautogui
-          pip install --upgrade pymongo
-          pip install --upgrade python-xlib
-          seleniumbase install chromedriver
-      - name: Run python vv.py --debug
-        run: |
-          python vv.py --debug --chrome --xvfb --screenshot
-      - name: Upload ipleak.net screenshot
-        uses: actions/upload-artifact@v4
-        with:
-          name: aaa2
-          path: aaa2.png
+    - name: Connect to random OpenVPN config
+      shell: bash
+      run: |
+        # Look for configs in repo folder ./vpn-configs
+        configs=(vpn-configs/*.ovpn)
+        if [ ${#configs[@]} -eq 0 ]; then
+          echo "No .ovpn configs found in ./vpn-configs"
+          exit 1
+        fi
+    
+        # Pick a random config
+        config="${configs[RANDOM % ${#configs[@]}]}"
+        echo "Connecting using $config"
+    
+        # OpenVPN still needs root to create tun device, so keep sudo here
+        sudo openvpn --config "$config" --daemon
+    
+        # Wait a bit to establish connection
+        sleep 20
+    
+        # Optionally, check VPN connection (print public IP)
+        curl ifconfig.me || true
+

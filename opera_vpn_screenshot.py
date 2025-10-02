@@ -84,9 +84,8 @@ for link in download_links:
             content = content.replace("cipher AES-128-CBC", "data-ciphers AES-128-CBC")
             dns_fix = (
                 "\nscript-security 2\n"
-                "up /etc/openvpn/update-systemd-resolved\n"
-                "down /etc/openvpn/update-systemd-resolved\n"
-                "down-pre\n"
+                "up /etc/openvpn/update-resolv-conf\n"
+                "down /etc/openvpn/update-resolv-conf\n"
             )
             if "update-systemd-resolved" not in content:
                 content += dns_fix

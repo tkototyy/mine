@@ -53,7 +53,7 @@ print(f"Collected {len(download_links)} links.")
 
 # --- Download and modify files ---
 # For Ubuntu, OpenVPN config dir is typically /etc/openvpn
-openvpn_config_dir = "/etc/openvpn"
+openvpn_config_dir = "vpn-configs/"
 
 # Make sure the directory exists
 os.makedirs(openvpn_config_dir, exist_ok=True)
